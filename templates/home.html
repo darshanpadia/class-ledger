@@ -1,0 +1,16 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home - Teacher Portal</title>
+</head>
+<body>
+    <h2>Dashboard</h2>
+
+    <form action="{{ url_for('logout') }}" method="post">
+        {{ form.csrf_token() }}
+        {{ form.submit}}
+    </form>
+
+</body>
+</html>

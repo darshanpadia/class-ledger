@@ -1,13 +1,14 @@
 import sqlite3 
 import os
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash
 
 load_dotenv()
 
 def create_tables():
     teacher_username = os.environ.get('TEACHER_USERNAME')
     teacher_password = os.environ.get('TEACHER_PASSWORD')
-    conn = sqlite3.connect('portal.db')
+    conn = sqlite3.connect('class-ledger.db')
     cur = conn.cursor()
 
     cur.execute('''
@@ -26,8 +27,8 @@ def create_tables():
             marks INT NON NULL
         )
     ''')
-
-    cur.execute('INSERT OR IGNORE INTO teachers (username, password) VALUES (?, ?)', (teacher_username, teacher_password))
+    hashed_password = generate_password_hash(teacher_password)
+    cur.execute('INSERT OR IGNORE INTO teachers (username, password) VALUES (?, ?)', (teacher_username, hashed_password))
 
     conn.commit()
     conn.close()

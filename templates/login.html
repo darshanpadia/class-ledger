@@ -1,0 +1,28 @@
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Teacher Portal</title>
+</head>
+<body>
+    <h2>Teacher Login</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}  <!-- Includes CSRF token -->
+
+        <label>Username:</label><br>
+        {{ form.teacher_username(size=32) }}<br><br>
+
+        <label>Password:</label><br>
+        {{ form.teacher_password(size=32) }}<br><br>
+
+        {{ form.submit() }}
+    </form>
+</body>
+</html>
