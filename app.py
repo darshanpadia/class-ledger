@@ -12,7 +12,7 @@ import os
 from dotenv import load_dotenv
 
 # Import helper to get teacher from DB, insert student record and get all student records
-from db import get_teacher_by_username, insert_student_record, get_all_student_records
+from db import get_teacher_by_username, insert_student_record, get_all_student_records, delete_student_record
 
 # Login, Logout and Student forms using Flask-WTF
 from forms import LoginForm, LogoutForm, StudentForm
@@ -108,7 +108,7 @@ def home():
 # - Uses flash messages for success or validation errors
 # ---------------------------------------------------------
 @app.route('/add_student', methods=['POST'])
-def add_student():
+def add_student_record():
     form = StudentForm()
 
     # If all form fields are valid, insert the student record
@@ -128,7 +128,29 @@ def add_student():
 
     # Redirect back to the home page regardless of form result
     return redirect(url_for('home'))
+
+# ---------------------------------------------------------
+# Route: delete_student
+# Handles POST request to delete a student record by ID
+# Requires user to be logged in (session must contain teacher_id)
+# Calls helper function to perform deletion from DB
+# Shows success message and redirects to home page
+# ---------------------------------------------------------
+@app.route('/remove_record/<int:record_id>', methods=['POST'])
+def remove_student_record(record_id):
+    # Redirect to login if user is not authenticated
+    if 'teacher_id' not in session:
+        return redirect(url_for('teacher_login'))
     
+    # Delete the student record from the database
+    delete_student_record(record_id)
+    
+    # Show a confirmation message
+    flash("Student record deleted.", "info")
+    
+    # Redirect to home page
+    return redirect(url_for('home'))
+   
 # -------------------------------------
 # Run the Flask development server
 # -------------------------------------

@@ -74,3 +74,15 @@ def get_all_student_records():
 
     conn.close()                # Close the database connection
     return students             # Return the list of student records
+
+# ---------------------------------------------------------
+# Function: delete_student_record
+# Deletes a student record from the database based on the ID
+# Parameter: record_id (int) - ID of the student to delete
+# ---------------------------------------------------------
+def delete_student_record(record_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM student_records WHERE id=?", (record_id,))
+    conn.commit()
+    conn.close()
