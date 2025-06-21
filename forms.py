@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 
 # Import validators to enforce field requirements
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange, Length, Regexp
 
 # ---------------------------------------------
 # LoginForm: Used to handle teacher login input
@@ -29,9 +29,40 @@ class LogoutForm(FlaskForm):
     # Submit button labeled "Logout"
     submit = SubmitField('Logout')
 
-
+# ---------------------------------------------------------
+# StudentForm: Form used to add a new student record
+# - Fields: student_name, subject, marks
+# - Includes validation to ensure:
+#     * Name is at least 2 characters and contains only letters/spaces
+#     * Subject is required
+#     * Marks must be a number between 1 and 100
+# - CSRF token is automatically included for security
+# ---------------------------------------------------------
 class StudentForm(FlaskForm):
-    student_name = StringField('Nmae', validators=[DataRequired()])
-    subject = StringField('Subject', validators=[DataRequired()])
-    marks = IntegerField('Marks', validators=[DataRequired()])
+    # Student name field - must be at least 2 characters long and only contain letters and spaces
+    student_name = StringField(
+        'Name',
+        validators=[
+            DataRequired(),  # Ensures the field is not left empty
+            Length(min=2),   # Requires at least 2 characters
+            Regexp(r'^[A-Za-z\s]+$', message="Name must contain only letters")  # Enforces letters and spaces only
+        ]
+    )
+
+    # Subject field - required text input
+    subject = StringField(
+        'Subject',
+        validators=[DataRequired()]  # Ensures the field is not left empty
+    )
+
+    # Marks field - must be an integer between 1 and 100
+    marks = IntegerField(
+        'Marks',
+        validators=[
+            DataRequired(),  # Ensures the field is not left empty
+            NumberRange(min=1, max=100, message="Marks must be a positive number between 1-100")  # Validates range
+        ]
+    )
+
+    # Submit button for the form
     submit = SubmitField("Add Student")

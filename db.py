@@ -34,18 +34,43 @@ def get_teacher_by_username(username):
 
     return teacher  # Returns None if no match found
 
+# ---------------------------------------------------------
+# insert_student_record:
+# Inserts a new student record into the student_records table
+# - Parameters:
+#     * student_name (str): Name of the student
+#     * subject (str): Subject for which the marks are recorded
+#     * marks (int): Marks obtained by the student
+# - Establishes DB connection, executes INSERT query, commits and closes
+# ---------------------------------------------------------
 def insert_student_record(student_name, subject, marks):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO student_records (student_name,subject,marks) VALUES (?, ?, ?)", (student_name, subject, marks))
-    conn.commit()
-    conn.close()
+    conn = get_db_connection()  # Establish database connection
+    cur = conn.cursor()         # Create a cursor object for executing SQL statements
 
+    # Execute an INSERT SQL statement to add the student data
+    cur.execute(
+        "INSERT INTO student_records (student_name, subject, marks) VALUES (?, ?, ?)",
+        (student_name, subject, marks)
+    )
+
+    conn.commit()  # Commit the transaction to save changes
+    conn.close()   # Close the database connection
+
+
+# ---------------------------------------------------------
+# get_all_student_records:
+# Retrieves all student records from the student_records table
+# - Returns:
+#     * List of sqlite3.Row objects representing student records
+# - Establishes DB connection, executes SELECT query, fetches all rows
+# ---------------------------------------------------------
 def get_all_student_records():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM student_records')
-    students = cur.fetchall()
-    conn.close()
-    return students
+    conn = get_db_connection()  # Establish database connection
+    cur = conn.cursor()         # Create a cursor object
 
+    # Execute a SELECT SQL statement to fetch all records
+    cur.execute('SELECT * FROM student_records')
+    students = cur.fetchall()   # Retrieve all rows from the query result
+
+    conn.close()                # Close the database connection
+    return students             # Return the list of student records

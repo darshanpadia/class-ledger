@@ -41,8 +41,8 @@ def teacher_login():
     # If form was submitted and passed all validators
     if form.validate_on_submit():
         # Get data from form fields
-        username = request.form['teacher_username']
-        password = request.form['teacher_password']
+        username = form.teacher_username.data
+        password = form.teacher_password.data
 
         # Query DB to find teacher with given username
         teacher = get_teacher_by_username(username)
@@ -75,6 +75,10 @@ def logout():
 # -------------------------------------
 # Route: /home
 # Protected page that only logged-in users can access
+# - Renders:
+#     * List of all student records from the database
+#     * CSRF-protected logout form
+#     * CSRF-protected add-student form
 # Uses LogoutForm for logout button CSRF safety
 # -------------------------------------
 @app.route('/home')
@@ -82,26 +86,47 @@ def home():
     # If not logged in, redirect to login
     if 'teacher_id' not in session:
         return redirect(url_for('teacher_login'))
+    
+    # Fetch all student records to display in the table
     student_records = get_all_student_records()
-    logout_form = LogoutForm()  # CSRF-only form for secure logout button
-    student_form = StudentForm()
-    return render_template('home.html', logout_form=logout_form, student_form=student_form,
-                            student_records=student_records)
+
+    # Create instances of forms for logout and adding a student
+    logout_form = LogoutForm()   # CSRF-protected logout form
+    student_form = StudentForm() # Add-student form with validation
+
+    # Render the home page with records and forms
+    return render_template('home.html',
+                           logout_form=logout_form,
+                           student_form=student_form,
+                           student_records=student_records)
 
 
+# ---------------------------------------------------------
+# Route: /add_student
+# - Handles POST request from student form submission
+# - Validates input and inserts record into database if valid
+# - Uses flash messages for success or validation errors
+# ---------------------------------------------------------
 @app.route('/add_student', methods=['POST'])
 def add_student():
     form = StudentForm()
+
+    # If all form fields are valid, insert the student record
     if form.validate_on_submit():
-        student_name = request.form['student_name']
-        subject = request.form['subject']
-        marks = request.form['marks']
+        student_name = form.student_name.data
+        subject = form.subject.data
+        marks = form.marks.data
 
         insert_student_record(student_name, subject, marks)
         flash("Student successfully added.", "success")
+
     else:
-        flash("Failed to add student, Please check the form.", "error")
-    
+        # If validation fails, flash each error message
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"{getattr(form, field).label.text}: {error}", "error")
+
+    # Redirect back to the home page regardless of form result
     return redirect(url_for('home'))
     
 # -------------------------------------
