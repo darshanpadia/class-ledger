@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 
 # Import field types from WTForms
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 
 # Import validators to enforce field requirements
 from wtforms.validators import DataRequired
@@ -28,3 +28,10 @@ class LoginForm(FlaskForm):
 class LogoutForm(FlaskForm):
     # Submit button labeled "Logout"
     submit = SubmitField('Logout')
+
+
+class StudentForm(FlaskForm):
+    student_name = StringField('Nmae', validators=[DataRequired()])
+    subject = StringField('Subject', validators=[DataRequired()])
+    marks = IntegerField('Marks', validators=[DataRequired()])
+    submit = SubmitField("Add Student")

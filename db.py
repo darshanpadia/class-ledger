@@ -33,3 +33,19 @@ def get_teacher_by_username(username):
     conn.close()
 
     return teacher  # Returns None if no match found
+
+def insert_student_record(student_name, subject, marks):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO student_records (student_name,subject,marks) VALUES (?, ?, ?)", (student_name, subject, marks))
+    conn.commit()
+    conn.close()
+
+def get_all_student_records():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM student_records')
+    students = cur.fetchall()
+    conn.close()
+    return students
+

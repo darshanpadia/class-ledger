@@ -11,11 +11,11 @@ from flask_wtf.csrf import CSRFProtect
 import os
 from dotenv import load_dotenv
 
-# Import helper to get teacher from DB
-from db import get_teacher_by_username
+# Import helper to get teacher from DB, insert student record and get all student records
+from db import get_teacher_by_username, insert_student_record, get_all_student_records
 
-# Login and Logout forms using Flask-WTF
-from forms import LoginForm, LogoutForm
+# Login, Logout and Student forms using Flask-WTF
+from forms import LoginForm, LogoutForm, StudentForm
 
 # Load environment variables from .env file (e.g., SECRET_KEY)
 load_dotenv()
@@ -54,7 +54,7 @@ def teacher_login():
             return redirect(url_for('home'))  # Redirect to home/dashboard
         else:
             # Invalid login credentials
-            flash("Invalid username or password.")  
+            flash("Invalid username or password.", "error")  
 
     # For GET requests or failed POST, show the login page again
     return render_template('login.html', form=form)
@@ -68,7 +68,7 @@ def teacher_login():
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()  # Clear all session data
-    flash("You have been logged out.")
+    flash("You have been logged out.", "info")
     return redirect(url_for('teacher_login'))  # Redirect back to login page
 
 
@@ -82,11 +82,28 @@ def home():
     # If not logged in, redirect to login
     if 'teacher_id' not in session:
         return redirect(url_for('teacher_login'))
+    student_records = get_all_student_records()
+    logout_form = LogoutForm()  # CSRF-only form for secure logout button
+    student_form = StudentForm()
+    return render_template('home.html', logout_form=logout_form, student_form=student_form,
+                            student_records=student_records)
 
-    form = LogoutForm()  # CSRF-only form for secure logout button
-    return render_template('home.html', form=form)
 
+@app.route('/add_student', methods=['POST'])
+def add_student():
+    form = StudentForm()
+    if form.validate_on_submit():
+        student_name = request.form['student_name']
+        subject = request.form['subject']
+        marks = request.form['marks']
 
+        insert_student_record(student_name, subject, marks)
+        flash("Student successfully added.", "success")
+    else:
+        flash("Failed to add student, Please check the form.", "error")
+    
+    return redirect(url_for('home'))
+    
 # -------------------------------------
 # Run the Flask development server
 # -------------------------------------

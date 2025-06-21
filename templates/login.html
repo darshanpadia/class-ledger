@@ -1,27 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login - Teacher Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .title{
+            margin-top: 0px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0040;    
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4c4c4c;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h2>Teacher Login</h2>
+    <h3 class="title">tailwebs.</h3>
+    <div class="login-card">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="flash-message {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-            <p style="color: red;">{{ message }}</p>
-        {% endfor %}
-    {% endwith %}
+        <form method="POST">
+            {{ form.hidden_tag() }}
 
-    <form method="POST">
-        {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label>Username:</label>
+                {{ form.teacher_username(size=32) }}
+            </div>
 
-        <label>Username:</label><br>
-        {{ form.teacher_username(size=32) }}<br><br>
+            <div class="form-group">
+                <label>Password:</label>
+                {{ form.teacher_password(size=32) }}
+            </div>
 
-        <label>Password:</label><br>
-        {{ form.teacher_password(size=32) }}<br><br>
-
-        {{ form.submit() }}
-    </form>
+            <div class="form-group">
+                {{ form.submit() }}
+            </div>
+        </form>
+    </div>
 </body>
 </html>
