@@ -26,17 +26,18 @@
         <div class="card">
 
             <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endwith %}
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endwith %}
+            </div>
 
             {% if student_records %}
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Subject</th>
                             <th>Marks</th>
@@ -47,8 +48,6 @@
                     <tbody>
                         {% for record in student_records %}
                         <tr id="row-{{ record.id }}">
-                            <td>{{ record.id }}</td>
-
                             <!-- UPDATE FORM -->
                             <form method="POST" action="{{ url_for('edit_student_record', record_id=record.id) }}" id="form-{{ record.id }}">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">

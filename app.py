@@ -124,6 +124,9 @@ def add_student_record():
 
         if existing:
             total_marks = int(existing['marks']) + int(marks)  # Add marks of existing and new
+            if total_marks > 100:
+                flash(f"Cannot add with existing record, total marks exceeding 100", "error")
+                return redirect(url_for('home'))
             update_student_record(existing['id'], student_name, subject, total_marks)  # Update existing record
             flash(f"Merged with existing record. Total marks: {total_marks}", "success")  # Inform user of merge
         else:
@@ -200,6 +203,10 @@ def edit_student_record(record_id):
     flash("Student record updated successfully.", "success")
 
     # Redirect back to the home/dashboard page
+    return redirect(url_for('home'))
+
+@app.route('/')
+def index():
     return redirect(url_for('home'))
    
 # -------------------------------------

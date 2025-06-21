@@ -63,6 +63,11 @@ th {
     background-color: #f2f2f2;
 }
 
+.flash-container {
+    min-height: 40px; /* Reserve space even if no flash message */
+    margin-bottom: 15px;
+}
+
 /* Flash Messages */
 .flash-message {
     padding: 10px;
