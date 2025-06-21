@@ -5,14 +5,14 @@ from flask import Flask, request, session, render_template, flash, url_for, redi
 from werkzeug.security import check_password_hash
 
 # Flask-WTF for CSRF protection
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 # For environment variable management
 import os
 from dotenv import load_dotenv
 
 # Import helper to get teacher from DB, insert student record and get all student records
-from db import get_teacher_by_username, insert_student_record, get_all_student_records, delete_student_record
+from db import get_teacher_by_username, insert_student_record, get_all_student_records, delete_student_record, update_student_record, find_duplicate_record
 
 # Login, Logout and Student forms using Flask-WTF
 from forms import LoginForm, LogoutForm, StudentForm
@@ -94,11 +94,14 @@ def home():
     logout_form = LogoutForm()   # CSRF-protected logout form
     student_form = StudentForm() # Add-student form with validation
 
+    csrf_token = generate_csrf()
+
     # Render the home page with records and forms
     return render_template('home.html',
                            logout_form=logout_form,
                            student_form=student_form,
-                           student_records=student_records)
+                           student_records=student_records,
+                           csrf_token=csrf_token)
 
 
 # ---------------------------------------------------------
@@ -116,9 +119,16 @@ def add_student_record():
         student_name = form.student_name.data
         subject = form.subject.data
         marks = form.marks.data
+        
+        existing = find_duplicate_record(student_name, subject)  # Check for an existing record with same name & subject
 
-        insert_student_record(student_name, subject, marks)
-        flash("Student successfully added.", "success")
+        if existing:
+            total_marks = int(existing['marks']) + int(marks)  # Add marks of existing and new
+            update_student_record(existing['id'], student_name, subject, total_marks)  # Update existing record
+            flash(f"Merged with existing record. Total marks: {total_marks}", "success")  # Inform user of merge
+        else:
+            insert_student_record(student_name, subject, marks)  # Insert as new record if no duplicate
+            flash("Student record successfully added.", "success")  # Confirmation message
 
     else:
         # If validation fails, flash each error message
@@ -149,6 +159,47 @@ def remove_student_record(record_id):
     flash("Student record deleted.", "info")
     
     # Redirect to home page
+    return redirect(url_for('home'))
+
+# ---------------------------------------------------------
+# Route: /edit_record/<record_id>
+# Method: POST
+# Description:
+#   Handles inline editing of a student record.
+#   - Validates that all input fields are non-empty.
+#   - Ensures marks is a numeric value.
+#   - Updates the record in the database if validation passes.
+#   - Redirects back to the home page.
+# ---------------------------------------------------------
+@app.route('/edit_record/<int:record_id>', methods=['POST'])
+def edit_student_record(record_id):
+    # Get values from submitted form and remove surrounding whitespace
+    name = request.form['name'].strip()
+    subject = request.form['subject'].strip()
+    marks = request.form['marks'].strip()  # ✅ FIX: call .strip()
+
+    # Basic validation: all fields must be filled, marks must be a digit
+    if not name or not subject or not marks.isdigit():
+        flash("Invalid input", "error")  # Flash error message to UI
+        return redirect(url_for('home'))  # Redirect back to home page
+    
+    existing = find_duplicate_record(name, subject)  # Check if a record with the same name and subject already exists
+
+    # If the duplicate exists but it's not the same record being edited
+    if existing and existing['id'] != record_id:
+        flash("Duplicate record with same name and subject already exists", "error")  # Show error
+        return redirect(url_for('home'))  # Redirect without updating
+
+    # Convert marks to integer after validation
+    marks = int(marks)
+
+    # Call DB helper to update the student record
+    update_student_record(record_id, name, subject, marks)
+
+    # Flash success message (optional)
+    flash("Student record updated successfully.", "success")
+
+    # Redirect back to the home/dashboard page
     return redirect(url_for('home'))
    
 # -------------------------------------

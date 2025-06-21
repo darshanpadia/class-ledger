@@ -1,4 +1,8 @@
-/* static/styles.css */
+/* ----------------------------------------------------------
+   Stylesheet: styles.css
+   Description: Base styles for Class Ledger UI (layout, table,
+                modal, buttons, header, flash messages, etc.)
+---------------------------------------------------------- */
 
 body {
     font-family: Arial, sans-serif;
@@ -7,6 +11,31 @@ body {
     padding: 0;
 }
 
+h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.center {
+    text-align: center;
+}
+
+form {
+    margin: 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Layout Card */
 .card {
     background: white;
     padding: 30px;
@@ -17,12 +46,7 @@ body {
     margin: 30px auto;
 }
 
-
-h2, h3 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
+/* Table Styling */
 table {
     border-collapse: collapse;
     width: 100%;
@@ -39,6 +63,7 @@ th {
     background-color: #f2f2f2;
 }
 
+/* Flash Messages */
 .flash-message {
     padding: 10px;
     margin-bottom: 15px;
@@ -66,6 +91,7 @@ th {
     color: #856404;
 }
 
+/* Buttons */
 button,
 input[type="submit"] {
     padding: 8px 15px;
@@ -91,6 +117,7 @@ input[type="submit"]:hover {
     background-color: #bbb;
 }
 
+/* Header */
 header {
     background-color: #ffffff;
     color: #4c4c4c;
@@ -118,6 +145,7 @@ header {
     margin-left: 25px;
 }
 
+/* Modal Styling */
 #addModal {
     display: none;
     position: fixed;
@@ -132,21 +160,19 @@ header {
     z-index: 100;
 }
 
-.center {
-    text-align: center;
-}
-
-form {
-    margin: 0;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+/* Fixed Width Action Column */
+td.actions-cell {
+    width: 180px;
+    white-space: nowrap;
     text-align: left;
+}
+
+td.actions-cell button,
+td.actions-cell form {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+td.actions-cell button {
+    min-width: 70px;
 }

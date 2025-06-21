@@ -86,3 +86,51 @@ def delete_student_record(record_id):
     cur.execute("DELETE FROM student_records WHERE id=?", (record_id,))
     conn.commit()
     conn.close()
+
+# ---------------------------------------------------------
+# Function: update_student_record
+# Updates an existing student record in the database
+#
+# Parameters:
+#   - student_id (int): ID of the student to update
+#   - name (str): New name for the student
+#   - subject (str): New subject name
+#   - marks (int): New marks value
+#
+# Steps:
+#   1. Prepare an UPDATE SQL query using parameterized values
+#   2. Execute the query to update the student record by ID   
+# ---------------------------------------------------------
+def update_student_record(student_id, name, subject, marks):
+    conn = get_db_connection()
+    cur = conn.cursor()    
+
+    cur.execute("""
+        UPDATE student_records 
+        SET student_name = ?, subject = ?, marks = ? 
+        WHERE id = ?
+    """, (name, subject, marks, student_id))
+
+    conn.commit()  
+    conn.close()    
+
+# ---------------------------------------------------------
+# Function: find_duplicate_record
+# Checks for an existing student record with the same
+# name and subject (case-insensitive) in the database.
+# Parameters:
+#   - student_name (str): Name of the student to search.
+#   - subject (str): Subject associated with the student.
+# Returns:
+#   - Matching record (sqlite3.Row) if found, else None
+# ---------------------------------------------------------
+def find_duplicate_record(student_name, subject):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT * FROM student_records
+        WHERE LOWER(student_name) = LOWER(?) AND LOWER(subject) = LOWER(?)
+    """, (student_name, subject))
+    row = cur.fetchone()
+    conn.close()
+    return row

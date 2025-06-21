@@ -39,6 +39,13 @@ def create_tables():
         )
     ''')
 
+    # Add unique index on student_name + subject (case-insensitive)
+    cur.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS unique_student_subject
+        ON student_records (LOWER(student_name), LOWER(subject));
+    """)
+
+
     # Hash the teacher's password securely using Werkzeug
     hashed_password = generate_password_hash(teacher_password)
 
