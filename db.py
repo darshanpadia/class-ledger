@@ -43,8 +43,11 @@ def get_teacher_by_username(username):
 #     * marks (int): Marks obtained by the student
 # - Establishes DB connection, executes INSERT query, commits and closes
 # ---------------------------------------------------------
-def insert_student_record(student_name, subject, marks):
-    conn = get_db_connection()  # Establish database connection
+def insert_student_record(student_name, subject, marks, conn=None):
+    own_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        own_conn = True
     cur = conn.cursor()         # Create a cursor object for executing SQL statements
 
     # Execute an INSERT SQL statement to add the student data
@@ -54,7 +57,8 @@ def insert_student_record(student_name, subject, marks):
     )
 
     conn.commit()  # Commit the transaction to save changes
-    conn.close()   # Close the database connection
+    if own_conn:
+        conn.close()   # Close the database connection
 
 
 # ---------------------------------------------------------
@@ -64,15 +68,19 @@ def insert_student_record(student_name, subject, marks):
 #     * List of sqlite3.Row objects representing student records
 # - Establishes DB connection, executes SELECT query, fetches all rows
 # ---------------------------------------------------------
-def get_all_student_records():
-    conn = get_db_connection()  # Establish database connection
+def get_all_student_records(conn=None):
+    own_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        own_conn = True
     cur = conn.cursor()         # Create a cursor object
 
     # Execute a SELECT SQL statement to fetch all records
     cur.execute('SELECT * FROM student_records')
     students = cur.fetchall()   # Retrieve all rows from the query result
 
-    conn.close()                # Close the database connection
+    if own_conn:
+        conn.close()            # Close the database connection
     return students             # Return the list of student records
 
 # ---------------------------------------------------------
@@ -80,12 +88,16 @@ def get_all_student_records():
 # Deletes a student record from the database based on the ID
 # Parameter: record_id (int) - ID of the student to delete
 # ---------------------------------------------------------
-def delete_student_record(record_id):
-    conn = get_db_connection()
+def delete_student_record(record_id, conn=None):
+    own_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        own_conn = True
     cur = conn.cursor()
     cur.execute("DELETE FROM student_records WHERE id=?", (record_id,))
     conn.commit()
-    conn.close()
+    if own_conn:
+        conn.close()
 
 # ---------------------------------------------------------
 # Function: update_student_record
@@ -101,8 +113,11 @@ def delete_student_record(record_id):
 #   1. Prepare an UPDATE SQL query using parameterized values
 #   2. Execute the query to update the student record by ID   
 # ---------------------------------------------------------
-def update_student_record(student_id, name, subject, marks):
-    conn = get_db_connection()
+def update_student_record(student_id, name, subject, marks, conn=None):
+    own_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        own_conn = True
     cur = conn.cursor()    
 
     cur.execute("""
@@ -112,7 +127,8 @@ def update_student_record(student_id, name, subject, marks):
     """, (name, subject, marks, student_id))
 
     conn.commit()  
-    conn.close()    
+    if own_conn:
+        conn.close()   
 
 # ---------------------------------------------------------
 # Function: find_duplicate_record
@@ -124,13 +140,17 @@ def update_student_record(student_id, name, subject, marks):
 # Returns:
 #   - Matching record (sqlite3.Row) if found, else None
 # ---------------------------------------------------------
-def find_duplicate_record(student_name, subject):
-    conn = get_db_connection()
+def find_duplicate_record(student_name, subject, conn=None):
+    own_conn = False
+    if conn is None:
+        conn = get_db_connection()
+        own_conn = True
     cur = conn.cursor()
     cur.execute("""
         SELECT * FROM student_records
         WHERE LOWER(student_name) = LOWER(?) AND LOWER(subject) = LOWER(?)
     """, (student_name, subject))
     row = cur.fetchone()
-    conn.close()
+    if own_conn:
+        conn.close()
     return row

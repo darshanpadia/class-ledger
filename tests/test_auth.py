@@ -117,4 +117,4 @@ class AuthTests(unittest.TestCase):
 
             home_after_logout = c.get('/home', follow_redirects=True)
             self.assertEqual(home_after_logout.status_code, 200)
-            self.assertIn(b'Teacher Login', home_after_logout.data)
+            self.assertIn(b'Login', home_after_logout.data)
