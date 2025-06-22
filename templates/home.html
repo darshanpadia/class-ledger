@@ -62,7 +62,7 @@
                                 </td>
                                 <td>
                                     <input type="number" name="marks" value="{{ record['marks'] }}"
-                                        readonly class="input-{{ record.id }}" min="1" max="100" required>
+                                        readonly class="input-{{ record.id }}" min="0" max="100" required>
                                 </td>
                                 <td class="actions-cell" id="action-cell-{{ record.id }}">
                                     <!-- Edit / Update / Cancel buttons -->
@@ -91,12 +91,12 @@
 
             <!-- Add Student Button -->
             <div style="text-align: left;">
-                <button onclick="document.getElementById('addModal').style.display='block';">Add Student</button>
+                <button onclick="document.getElementById('addModal').style.display='block';">Add</button>
             </div>
 
             <!-- Add Student Modal -->
             <div id="addModal">
-                <h3 class="center">Add Student</h3>
+                <h3 class="center">Add Record</h3>
                 <form method="POST" action="{{ url_for('add_student_record') }}">
                     {{ student_form.csrf_token }}
                     <div class="form-group">

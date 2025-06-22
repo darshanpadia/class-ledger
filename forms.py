@@ -60,9 +60,9 @@ class StudentForm(FlaskForm):
         'Marks',
         validators=[
             DataRequired(),  # Ensures the field is not left empty
-            NumberRange(min=1, max=100, message="Marks must be a positive number between 1-100")  # Validates range
+            NumberRange(min=0, max=100, message="Marks must be a positive number between 0-100")  # Validates range
         ]
     )
 
     # Submit button for the form
-    submit = SubmitField("Add Student")
+    submit = SubmitField("Add Record")
