@@ -155,23 +155,23 @@ Session-based authentication
 
 
 
-🧩 Folder Structure
+## 🧩 Folder Structure
 
+```text
 teacher-portal/
+├── app.py              # Main Flask app
+├── models.py           # DB table creation
+├── db.py               # DB connection & queries
+├── forms.py            # Flask-WTF form classes
+├── .env                # Environment variables
+├── requirements.txt    # Python dependencies
 │
-├── app.py                  # Main Flask app
-├── models.py               # DB table creation
-├── db.py                   # DB connection & queries
-├── forms.py                # Flask-WTF form classes
-├── .env                    # Environment variables
-├── requirements.txt        # Python dependencies
-│
-├── templates/              # HTML templates (login, home)
-├── static/                 # CSS / JS
-├── tests/                  # All test cases
-│   ├── test_db.py
-│   ├── test_auth.py
-│   └── test_student_records.py
+├── templates/          # HTML templates (login, home)
+├── static/             # CSS / JS
+└── tests/              # All test cases
+    ├── test_db.py
+    ├── test_auth.py
+    └── test_student_records.py
 🧠 Why This Architecture?
 This project is designed for:
 
