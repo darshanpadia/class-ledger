@@ -1,10 +1,10 @@
 🧑‍🏫 Class-Ledger – Flask App
-```A secure and scalable Flask-based dashboard application that allows teachers to add, edit, delete, and manage student records with validations and user-friendly UI. The app uses Flask-WTF forms, CSRF protection, password hashing, and a clean architecture ready for production and future enhancements.
+A secure and scalable Flask-based dashboard application that allows teachers to add, edit, delete, and manage student records with validations and user-friendly UI. The app uses Flask-WTF forms, CSRF protection, password hashing, and a clean architecture ready for production and future enhancements.
 
 
 
 📌 Features
-```Secure teacher login with hashed password
+Secure teacher login with hashed password
 
 Dashboard to:
 
@@ -35,7 +35,7 @@ Clean folder structure and scalable
 
 
 🛠️ Tech Stack
-```Flask – Web framework
+Flask – Web framework
 
 Flask-WTF – Form handling with CSRF protection
 
@@ -52,7 +52,7 @@ HTML + CSS (Minimal) – UI
 
 
 🚀 Getting Started
-```Follow these steps to run the project locally:
+Follow these steps to run the project locally:
 
 1️⃣ Clone or Download
 git clone https://github.com/darshanpadia/class-ledger.git
@@ -92,7 +92,7 @@ python app.py
 
 
 ✅ Application Flow
-```🔐 Login
+🔐 Login
 Navigate to http://127.0.0.1:5000/login
 
 Use credentials from your .env file
@@ -106,7 +106,7 @@ Password: pass123
 
 
 🧾 Dashboard Features
-```Once logged in, you will be redirected to the dashboard (/home) where you can:
+Once logged in, you will be redirected to the dashboard (/home) where you can:
 
 Add Student Record
 
@@ -131,7 +131,7 @@ Appear for all actions (e.g., “Record added”, “Invalid input”, etc.)
 
 
 🧪 Testing
-```Run the test suite using:
+Run the test suite using:
 pytest
 Tests include:
 
@@ -142,9 +142,8 @@ End-to-End	Login → Home → Logout → Home
 
 
 
-🛡️ Security Best Practices 
-
-```CSRF protection on all forms
+🛡️ Security Best Practices Implemented
+CSRF protection on all forms
 
 Passwords stored as secure hashes
 
