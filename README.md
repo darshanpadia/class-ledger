@@ -132,7 +132,7 @@ Appear for all actions (e.g., “Record added”, “Invalid input”, etc.)
 
 🧪 Testing
 Run the test suite using:
-pytest
+python -m pytest
 Tests include:
 
 Type	Coverage
