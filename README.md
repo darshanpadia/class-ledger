@@ -1,6 +1,8 @@
 🧑‍🏫 Class-Ledger – Flask App
 A secure and scalable Flask-based dashboard application that allows teachers to add, edit, delete, and manage student records with validations and user-friendly UI. The app uses Flask-WTF forms, CSRF protection, password hashing, and a clean architecture ready for production and future enhancements.
 
+
+
 📌 Features
 Secure teacher login with hashed password
 
@@ -18,6 +20,8 @@ Form validations and CSRF protection on all actions
 
 Flash messages for all user actions
 
+
+
 Tests:
 
 ✅ Unit tests
@@ -26,7 +30,9 @@ Tests:
 
 ✅ End-to-end flow
 
-Clean folder structure and scalable design
+Clean folder structure and scalable 
+
+
 
 🛠️ Tech Stack
 Flask – Web framework
@@ -41,7 +47,9 @@ Python-Dotenv – Manage secrets
 
 Pytest – Testing framework
 
-HTML + CSS (Minimal) – UI layout
+HTML + CSS (Minimal) – UI 
+
+
 
 🚀 Getting Started
 Follow these steps to run the project locally:
@@ -81,6 +89,8 @@ Use this to start the Flask app:
 python app.py
 ⚠️ flask run won't work here due to the file named db.py, which may conflict with system modules.
 
+
+
 ✅ Application Flow
 🔐 Login
 Navigate to http://127.0.0.1:5000/login
@@ -92,6 +102,8 @@ Example:
 Username: teacher1
 
 Password: pass123
+
+
 
 🧾 Dashboard Features
 Once logged in, you will be redirected to the dashboard (/home) where you can:
@@ -116,6 +128,8 @@ Flash Messages
 
 Appear for all actions (e.g., “Record added”, “Invalid input”, etc.)
 
+
+
 🧪 Testing
 Run the test suite using:
 pytest
@@ -124,7 +138,9 @@ Tests include:
 Type	Coverage
 Unit Tests	DB operations (insert, find, update, delete)
 Integration	Login → Add → Merge
-End-to-End	Login → Add → Edit → Delete
+End-to-End	Login → Home → Logout → Home
+
+
 
 🛡️ Security Best Practices Implemented
 CSRF protection on all forms
@@ -136,6 +152,8 @@ Parameterized queries to prevent SQL injection
 Input validation on frontend and backend
 
 Session-based authentication
+
+
 
 🧩 Folder Structure
 
@@ -164,6 +182,8 @@ Security – Adheres to Flask security best practices
 Testability – Full coverage from DB to frontend
 
 Scalability – Easy to add features like multiple users, charts, or export features in the future
+
+
 
 📬 Feedback or Contributions?
 Feel free to fork, open issues, or contribute enhancements. All improvements and suggestions are welcome!
