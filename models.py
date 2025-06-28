@@ -16,6 +16,9 @@ def create_tables():
     teacher_username = os.environ.get('TEACHER_USERNAME')
     teacher_password = os.environ.get('TEACHER_PASSWORD')
 
+    teacher_username2 = os.environ.get('TEACHER_USERNAME2')
+    teacher_password2 = os.environ.get('TEACHER_PASSWORD2')
+
     # Connect to SQLite database (creates file if it doesn't exist)
     conn = sqlite3.connect('class-ledger.db')
     cur = conn.cursor()
@@ -35,7 +38,8 @@ def create_tables():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_name TEXT NOT NULL,
             subject TEXT NOT NULL,
-            marks INT NOT NULL
+            marks INT NOT NULL,
+            teacher_id INT NOT NULL
         )
     ''')
 
@@ -45,9 +49,15 @@ def create_tables():
         ON student_records (LOWER(student_name), LOWER(subject));
     """)
 
+    cur.execute('''CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                log_msg TEXT NOT NULL
+                )''')
+
 
     # Hash the teacher's password securely using Werkzeug
     hashed_password = generate_password_hash(teacher_password)
+    hashed_password2 = generate_password_hash(teacher_password2)
 
     # Insert default teacher into the teachers table
     # 'INSERT OR IGNORE' ensures it won't add duplicate if username already exists
@@ -55,6 +65,8 @@ def create_tables():
         'INSERT OR IGNORE INTO teachers (username, password) VALUES (?, ?)',
         (teacher_username, hashed_password)
     )
+
+    cur.execute('INSERT OR IGNORE INTO teachers (username, password) VALUES (?,?)', (teacher_username2, hashed_password2))
 
     # Commit changes and close the connection
     conn.commit()

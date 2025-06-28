@@ -12,8 +12,9 @@ import os
 from dotenv import load_dotenv
 
 # Import helper to get teacher from DB, insert student record and get all student records
-from db import get_teacher_by_username, insert_student_record, get_all_student_records, delete_student_record, update_student_record, find_duplicate_record
-
+from db import (get_teacher_by_username, insert_student_record, get_all_student_records,
+                delete_student_record, update_student_record, find_duplicate_record,
+                  fetch_student_record_by_id, log_update_message_for_records)
 # Login, Logout and Student forms using Flask-WTF
 from forms import LoginForm, LogoutForm, StudentForm
 
@@ -116,9 +117,10 @@ def add_student_record():
 
     # If all form fields are valid, insert the student record
     if form.validate_on_submit():
-        student_name = form.student_name.data
-        subject = form.subject.data
+        student_name = form.student_name.data.strip()
+        subject = form.subject.data.strip()
         marks = form.marks.data
+        teacher_id = session.get('teacher_id')
         
         existing = find_duplicate_record(student_name, subject)  # Check for an existing record with same name & subject
 
@@ -130,7 +132,7 @@ def add_student_record():
             update_student_record(existing['id'], student_name, subject, total_marks)  # Update existing record
             flash(f"Merged with existing record. Total marks: {total_marks}", "success")  # Inform user of merge
         else:
-            insert_student_record(student_name, subject, marks)  # Insert as new record if no duplicate
+            insert_student_record(student_name, subject, marks, teacher_id)  # Insert as new record if no duplicate
             flash("Student record successfully added.", "success")  # Confirmation message
 
     else:
@@ -177,9 +179,14 @@ def remove_student_record(record_id):
 @app.route('/edit_record/<int:record_id>', methods=['POST'])
 def edit_student_record(record_id):
     # Get values from submitted form and remove surrounding whitespace
+
+    record = fetch_student_record_by_id(record_id)
+
     name = request.form['name'].strip()
     subject = request.form['subject'].strip()
     marks = request.form['marks'].strip()  # ✅ FIX: call .strip()
+    
+
 
     # Basic validation: all fields must be filled, marks must be a digit
     if not name or not subject or not marks.isdigit():
@@ -197,7 +204,13 @@ def edit_student_record(record_id):
     marks = int(marks)
 
     # Call DB helper to update the student record
-    update_student_record(record_id, name, subject, marks)
+    if record['teacher_id'] == session.get('teacher_id'):
+        update_student_record(record_id, name, subject, marks)
+        msg = f'{record['teacher_id']} updated {name}'
+        print(msg)
+        print(log_update_message_for_records(msg))
+    else :
+        flash("Teacher dont have access to edit this entry.", "error")
 
     # Flash success message (optional)
     flash("Student record updated successfully.", "success")

@@ -43,7 +43,7 @@ def get_teacher_by_username(username):
 #     * marks (int): Marks obtained by the student
 # - Establishes DB connection, executes INSERT query, commits and closes
 # ---------------------------------------------------------
-def insert_student_record(student_name, subject, marks, conn=None):
+def insert_student_record(student_name, subject, marks, teacher_id, conn=None):
     own_conn = False
     if conn is None:
         conn = get_db_connection()
@@ -52,13 +52,24 @@ def insert_student_record(student_name, subject, marks, conn=None):
 
     # Execute an INSERT SQL statement to add the student data
     cur.execute(
-        "INSERT INTO student_records (student_name, subject, marks) VALUES (?, ?, ?)",
-        (student_name, subject, marks)
+        "INSERT INTO student_records (student_name, subject, marks, teacher_id) VALUES (?, ?, ?, ?)",
+        (student_name, subject, marks, teacher_id)
     )
 
     conn.commit()  # Commit the transaction to save changes
     if own_conn:
         conn.close()   # Close the database connection
+
+def fetch_student_record_by_id(record_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    record_id = str(record_id)
+
+    student_record = cur.execute('SELECT * FROM student_records WHERE id=?', (record_id)).fetchone()
+
+    conn.close()
+
+    return student_record
 
 
 # ---------------------------------------------------------
@@ -154,3 +165,13 @@ def find_duplicate_record(student_name, subject, conn=None):
     if own_conn:
         conn.close()
     return row
+
+def log_update_message_for_records(log_msg):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute('INSERT INTO logs (log_msg) VALUES (?)', [log_msg])
+
+    conn.commit()
+    conn.close()
+    return log_msg
